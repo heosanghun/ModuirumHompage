@@ -1,0 +1,6 @@
+{
+  "ftpMini.host": "your-host.dothome.co.kr",
+  "ftpMini.username": "your-username",
+  "ftpMini.password": "your-password",
+  "ftpMini.remoteRoot": "/html"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "moduirum-sovereign-ai-homepage",
+  "version": "1.0.0",
+  "description": "MODUIRUM — Sovereign O(1) Constant Memory Infrastructure Homepage",
+  "scripts": {
+    "dev": "npx -y serve . -l 3000",
+    "start": "npx -y serve ."
+  },
+  "keywords": [
+    "moduirum",
+    "cogni-os",
+    "sovereign-ai",
+    "deq"
+  ],
+  "author": "",
+  "license": "ISC"
+}

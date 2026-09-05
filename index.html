@@ -1,0 +1,884 @@
+<!DOCTYPE html><html class="dark" lang="ko" style=""><head>
+<meta charset="utf-8">
+<title>MODUIRUM — Sovereign O(1) Constant Memory Infrastructure</title>
+<link rel="icon" type="image/png" href="assets/images/moduirum_logo.png">
+<!-- Google Fonts: Space Grotesk & JetBrains Mono & Geist -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.css" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0a0e18",
+            "inverse-on-surface": "#2c303b",
+            "surface-container-highest": "#313540",
+            "on-error": "#690005",
+            "secondary-container": "#0053db",
+            "surface-tint": "#00dce6",
+            "on-primary-container": "#006a70",
+            "surface-dim": "#0f131d",
+            "on-primary-fixed": "#002022",
+            "on-primary-fixed-variant": "#004f53",
+            "on-error-container": "#ffdad6",
+            "on-tertiary": "#003256",
+            "inverse-surface": "#dfe2f1",
+            "error-container": "#93000a",
+            "secondary-fixed-dim": "#b4c5ff",
+            "on-secondary-fixed-variant": "#003ea8",
+            "secondary-fixed": "#dbe1ff",
+            "on-tertiary-fixed-variant": "#004a7a",
+            "outline": "#849495",
+            "surface-bright": "#353944",
+            "primary": "#e0fdff",
+            "secondary": "#b4c5ff",
+            "surface-variant": "#313540",
+            "surface": "#0f131d",
+            "on-secondary-fixed": "#00174b",
+            "surface-container-low": "#171b26",
+            "on-tertiary-container": "#0063a1",
+            "on-tertiary-fixed": "#001d34",
+            "on-primary": "#00373a",
+            "primary-fixed": "#6ff6ff",
+            "tertiary-container": "#c1ddff",
+            "tertiary-fixed": "#d0e4ff",
+            "inverse-primary": "#00696f",
+            "on-surface-variant": "#b9cacb",
+            "error": "#ffb4ab",
+            "primary-fixed-dim": "#00dce6",
+            "outline-variant": "#3a494b",
+            "tertiary": "#f4f7ff",
+            "surface-container": "#1c1f2a",
+            "surface-container-high": "#262a35",
+            "primary-container": "#00f2fe",
+            "on-background": "#dfe2f1",
+            "background": "#0f131d",
+            "on-secondary": "#002a78",
+            "on-secondary-container": "#cdd7ff",
+            "on-surface": "#dfe2f1",
+            "tertiary-fixed-dim": "#9bcbff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "space-3xl": "4rem",
+            "space-2xl": "3rem",
+            "space-3xs": "0.125rem",
+            "space-xs": "0.5rem",
+            "space-sm": "0.75rem",
+            "margin-tablet": "2rem",
+            "gutter-desktop": "1.5rem",
+            "space-xl": "2rem",
+            "gutter-mobile": "1rem",
+            "space-2xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "margin-desktop": "3rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "label-sm": ["JetBrains Mono", "monospace"],
+            "label-lg": ["JetBrains Mono", "monospace"],
+            "display-hero-mobile": ["Space Grotesk", "sans-serif"],
+            "body-md": ["Geist", "sans-serif"],
+            "body-sm": ["Geist", "sans-serif"],
+            "display-hero": ["Space Grotesk", "sans-serif"],
+            "headline-xl": ["Space Grotesk", "sans-serif"],
+            "body-lg": ["Geist", "sans-serif"],
+            "headline-xl-mobile": ["Space Grotesk", "sans-serif"],
+            "headline-sm": ["Space Grotesk", "sans-serif"],
+            "headline-md": ["Space Grotesk", "sans-serif"],
+            "label-md": ["JetBrains Mono", "monospace"],
+            "headline-lg": ["Space Grotesk", "sans-serif"]
+          },
+          "fontSize": {
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "display-hero-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "display-hero": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "600" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.015em", "fontWeight": "500" }],
+            "label-md": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Subtle custom technical grid background */
+    .tech-grid-canvas {
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.08) 0%, transparent 65%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 48px 48px, 48px 48px;
+    }
+
+    /* Scanline overlay for high-tech telemetry */
+    .scanline-pulse {
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 242, 254, 0.04) 50%, transparent 100%);
+      animation: scan 6s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(1000%); }
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md text-body-md antialiased selection:bg-primary-container selection:text-surface-container-lowest relative overflow-x-hidden min-h-screen">
+<!-- TOP APP BAR (Shared Components JSON Anchor) -->
+<header class="docked full-width top-0 sticky z-30 bg-surface-container-lowest/80 backdrop-blur-md dark:bg-surface-container-lowest/80 border-b border-outline-variant/30 shadow-[0_0_20px_-4px_rgba(0,242,254,0.15)] transition-all">
+<div class="flex justify-between items-center w-full px-6 py-3.5 max-w-full backdrop-blur-xl">
+<!-- Left: Logo & Live Status Capsule -->
+<div class="flex items-center gap-5">
+<a class="flex items-center gap-3.5 group" href="#">
+  <div class="relative flex items-center justify-center shrink-0">
+    <div class="absolute -inset-1 rounded-2xl bg-primary-container/20 blur-md group-hover:bg-primary-container/40 transition-all"></div>
+    <img src="assets/images/moduirum_logo.png" alt="MODUIRUM Logo" class="w-9 h-9 relative object-contain drop-shadow-[0_0_12px_rgba(0,242,254,0.5)] group-hover:scale-105 transition-transform duration-300" />
+  </div>
+  <div class="flex flex-col leading-none">
+    <span class="text-[16px] font-black tracking-[0.12em] text-primary font-headline-sm">
+      MODUIRUM
+    </span>
+    <span class="text-[9px] font-label-sm tracking-[0.24em] text-on-surface-variant font-mono uppercase mt-1">SOVEREIGN AI SYSTEMS</span>
+  </div>
+</a>
+<div class="hidden sm:flex items-center gap-2 px-2.5 py-1 bg-surface-container-high/60 border border-outline-variant/40 rounded-lg">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container shadow-[0_0_6px_#00f2fe]"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider">NODE: 0x8F4 // 100% AIR-GAP</span>
+</div>
+</div>
+<!-- Center: Navigation Links from JSON -->
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-primary dark:text-primary font-label-md text-label-md border-b-2 border-primary-container pb-1 text-primary-container" href="#telemetry">Telemetry</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" href="#inference-nodes">Inference Nodes</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" href="#sovereign-clusters">Sovereign Clusters</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" href="#defense-vault">Defense Vault</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" href="#cryptographic-audit">Cryptographic Audit</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors flex items-center gap-1.5 group" href="physical_ai_data_factory.html">
+  <span class="w-1.5 h-1.5 rounded-full bg-primary-container group-hover:scale-125 transition-transform shadow-[0_0_6px_#00f2fe]"></span>
+  <span>Physical AI Factory</span>
+</a>
+</nav>
+<!-- Right: Action Cluster -->
+<div class="flex items-center gap-2.5">
+<a class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-surface-container-high/90 border border-primary-container/40 hover:border-primary-container text-primary-container hover:bg-primary-container/15 font-label-md text-[13px] font-semibold transition-all duration-150 shadow-[0_0_12px_rgba(0,242,254,0.15)] active:scale-[0.99]" href="physical_ai_data_factory.html">
+  <span class="material-symbols-outlined text-[16px]">precision_manufacturing</span>
+  <span>Data Factory</span>
+</a>
+<div class="hidden md:flex items-center gap-1.5 border-r border-outline-variant/30 pr-2.5 ml-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high/40 rounded transition-all" title="Terminal View">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high/40 rounded transition-all" title="Security Enclave">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high/40 rounded transition-all relative" title="System Telemetry Alerts">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 bg-primary-container rounded-full shadow-[0_0_4px_#00f2fe]"></span>
+</button>
+</div>
+<a class="hidden sm:inline-block text-on-surface-variant hover:text-primary font-label-md text-label-md px-2.5 py-1.5 transition-colors" href="#docs">
+          Docs
+        </a>
+<a class="flex items-center gap-2 bg-secondary-container hover:bg-primary-container text-white hover:text-surface-container-lowest font-body-md text-body-md font-medium px-4 py-1.5 rounded border border-white/20 shadow-[0_0_16px_-2px_rgba(0,242,254,0.3)] transition-all duration-150 active:scale-[0.99]" href="#consultation">
+<span class="material-symbols-outlined text-[16px]" data-icon="memory">memory</span>
+          Deploy Cluster
+        </a>
+</div>
+</div>
+</header>
+<main class="tech-grid-canvas relative z-10">
+<!-- HERO STAGE (Deep Tech Sovereign AI Command) -->
+<section class="relative pt-12 pb-24 md:pt-20 md:pb-32 px-6 lg:px-12 max-w-7xl mx-auto overflow-hidden">
+<!-- Ambient Radial Backlight -->
+<div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-primary-container/10 blur-[130px] rounded-full pointer-events-none -z-10"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+<!-- Left Hero Narrative (7 cols) -->
+<div class="lg:col-span-7 flex flex-col items-start gap-6">
+<!-- Compliance Chip -->
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-low/90 border border-outline-variant/40 rounded-lg shadow-[0_0_12px_rgba(0,242,254,0.08)]">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+<span class="font-label-sm text-label-sm text-primary-container tracking-wider">MIL-STD-810H &amp; EU AI ACT COMPLIANT // SOVEREIGN ENGINE</span>
+</div>
+<!-- Main Impact Title -->
+<h1 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl font-bold tracking-tight text-primary leading-tight">
+            수학적 증명으로 메모리 한계를 지우다:<br>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container via-secondary-fixed to-primary">
+              O(1) 소버린 AI 하드웨어
+            </span>
+</h1>
+<!-- Technical Explainer -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            기존 3~5억 원 상당의 GPU 수랭 클러스터 인프라를 단 1대의 엔터프라이즈 워크스테이션(<span class="text-on-surface font-semibold font-label-md">NVIDIA RTX 6000 Ada</span>)으로 압축 대체. 무한 시퀀스에서도 수학적 평형 모델(DEQ) 기반 48GB VRAM을 불변 고정하고, 변조 불가능한 <span class="text-primary-container font-medium">Tech-Audit™</span> 감사 봉인을 제공합니다.
+          </p>
+<!-- Dual Call to Action Buttons -->
+<div class="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
+<a class="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-secondary-container to-primary-container hover:from-primary-container hover:to-primary text-surface-container-lowest font-body-md text-body-md font-semibold px-6 py-3.5 rounded border border-white/30 shadow-[0_0_24px_-4px_rgba(0,242,254,0.4)] transition-all" href="#consultation">
+<span class="material-symbols-outlined text-[18px]" data-icon="lock_open">lock_open</span>
+              무상 Air-Gap PoC 신청
+            </a>
+<a class="w-full sm:w-auto flex items-center justify-center gap-2 bg-surface-container-high/60 hover:bg-surface-container-highest border border-white/10 hover:border-white/20 text-on-surface font-body-md text-body-md px-5 py-3.5 rounded transition-all" href="#whitepaper">
+<span class="material-symbols-outlined text-[18px]" data-icon="description">description</span>
+              1.1억 실증 백서 다운로드
+            </a>
+</div>
+<!-- Micro Spec Badges -->
+<div class="grid grid-cols-3 gap-4 pt-4 border-t border-outline-variant/30 w-full">
+<div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Memory Complexity</div>
+<div class="font-headline-sm text-headline-sm font-semibold text-primary-container mt-0.5">O(1) Constant</div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider">VRAM Consumption</div>
+<div class="font-headline-sm text-headline-sm font-semibold text-primary mt-0.5">48.00 GB Fixed</div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Network Dependency</div>
+<div class="font-headline-sm text-headline-sm font-semibold text-secondary-fixed mt-0.5">0.00% (Air-Gapped)</div>
+</div>
+</div>
+</div>
+<!-- Right Hero Glassmorphism Stage (5 cols) -->
+<div class="lg:col-span-5 relative">
+<!-- Glassmorphic Terminal Window Encapsulating Sovereign Hardware -->
+<div class="relative rounded-xl border border-white/15 bg-surface-container-low/70 backdrop-blur-xl p-3.5 shadow-[0_0_30px_-5px_rgba(0,242,254,0.2)]">
+<!-- Terminal Header -->
+<div class="flex items-center justify-between pb-3 mb-3 border-b border-outline-variant/30 px-2">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-error/80"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-outline/80"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container/80"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-2">MODUIRUM_CORE // BROYDEN-SOLVER</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary-container px-2 py-0.5 bg-surface-container rounded border border-outline-variant/40">ONLINE</span>
+</div>
+<!-- Hardware Showcase Visual Container -->
+<div class="relative overflow-hidden rounded-lg border border-white/10 bg-black aspect-[4/3] group">
+<!-- Using Image 17 as mandated for hero hardware node -->
+<img alt="MODUIRUM Sovereign AI Hardware Node (Cogni-OS)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCo74Ip-lVFXj8VZY-U-NRKBaWzlsuuqjDOR-NCLMjSQmzAWQyHgZlWQZogvJPMnVbqmsOCpFUAmnRDNSaAdtqzoyMy9Bhf274SiAINVEILoZNkm6JMIp5hxcmUY55bCxP7jTmu4fC2YAB2NnymhxEmT_3FH75cBnI-VQ4b3uni9Kf8ZBCN9nVyJ2aeilg9e0dsHq6azSds93DB1fgotGXZZAwdJsC8gyt8KDXPxgsSMlykv-DOnllu">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-80"></div>
+<!-- Live HUD Telemetry Overlay -->
+<div class="absolute bottom-3 left-3 right-3 p-3 bg-surface-container-lowest/85 backdrop-blur-md border border-white/10 rounded">
+<div class="flex justify-between items-center text-label-sm font-label-sm border-b border-outline-variant/30 pb-1.5 mb-1.5">
+<span class="text-on-surface-variant">EQUILIBRIUM CONVERGENCE</span>
+<span class="text-primary-container font-mono">L2 Norm: 1.04e-7 [CONVERGED]</span>
+</div>
+<div class="grid grid-cols-2 gap-2 text-label-sm font-label-sm">
+<div>
+<span class="text-outline">SOLVER:</span> <span class="text-primary">Quasi-Newton Broyden</span>
+</div>
+<div class="text-right">
+<span class="text-outline">MEM:</span> <span class="text-primary-container font-semibold">48.00 GB LOCKED</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-time Status Micro-Strip -->
+<div class="mt-3 grid grid-cols-3 gap-2 text-center text-label-sm font-label-sm">
+<div class="bg-surface-container p-2 rounded border border-outline-variant/20">
+<span class="text-outline block">FP8 PRECISION</span>
+<span class="text-on-surface font-semibold">Native Hardware</span>
+</div>
+<div class="bg-surface-container p-2 rounded border border-outline-variant/20">
+<span class="text-outline block">SHA-256 SEAL</span>
+<span class="text-primary-container font-semibold">Air-Gap Root</span>
+</div>
+<div class="bg-surface-container p-2 rounded border border-outline-variant/20">
+<span class="text-outline block">LEAK RISK</span>
+<span class="text-error font-semibold">0.00% Zero-Trust</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- KEY FACT STRIP (Bento Metric Ticker) -->
+<section class="border-y border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md py-8 px-6 lg:px-12">
+<div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+<!-- Metric 1 -->
+<div class="flex flex-col border-l border-primary-container/40 pl-4">
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">1.1억 원</div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mt-1">방산 아주산업 실제 수주 완료</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">PCT 국제 원천 특허 등록 및 군사 보안 검증</p>
+</div>
+<!-- Metric 2 -->
+<div class="flex flex-col border-l border-primary-container/40 pl-4">
+<div class="font-headline-lg text-headline-lg font-bold text-primary-container tracking-tight">O(1) Constant</div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mt-1">무한 시퀀스 VRAM 불변</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Transformer KV-Cache의 O(N²) 폭발 현상 근본 박멸</p>
+</div>
+<!-- Metric 3 -->
+<div class="flex flex-col border-l border-primary-container/40 pl-4">
+<div class="font-headline-lg text-headline-lg font-bold text-secondary-fixed tracking-tight">80% Cost Drop</div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mt-1">CAPEX 5억 ➔ 8,500만 원</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">상시 데이터센터 전력 소비 1/6 이하로 절감</p>
+</div>
+<!-- Metric 4 -->
+<div class="flex flex-col border-l border-primary-container/40 pl-4">
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">100% Air-Gap</div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mt-1">물리적 암호키 Enclave 통제</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">인터넷 접속 없이도 구독 라이선스 무결성 보증</p>
+</div>
+</div>
+</section>
+<!-- ARCHITECTURAL CONTRAST: LEGACY TRANSFORMER VS MODUIRUM COGNI-OS DEQ -->
+<section class="py-20 md:py-28 px-6 lg:px-12 max-w-7xl mx-auto" id="inference-nodes">
+<div class="text-center max-w-4xl mx-auto mb-16">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high/70 border border-outline-variant/40 rounded-lg mb-3">
+<span class="font-label-sm text-label-sm text-primary-container">MATHEMATICAL BREAKTHROUGH</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl font-bold text-primary break-keep">
+          기존 생성형 AI의 치명적 한계 vs <span class="whitespace-nowrap">MODUIRUM Cogni-OS</span>
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-3 break-keep">
+          문서 길이가 길어질수록 기하급수적으로 폭발하는 Transformer의 메모리 비효율을 고정점 반복(Fixed-Point Iteration) 수학으로 완벽히 해결했습니다.
+        </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+<!-- Left: Legacy Fragility Tile (5 cols) -->
+<div class="lg:col-span-5 relative p-7 md:p-8 rounded-xl border border-error/30 bg-surface-container-low/50 backdrop-blur-md overflow-hidden flex flex-col justify-between h-full">
+<div class="flex items-center justify-between border-b border-error/20 pb-4 mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-error break-keep">기존 Transformer 기반 <span class="whitespace-nowrap">대형 클러스터</span></h3>
+</div>
+<span class="font-label-sm text-label-sm text-error px-2 py-0.5 rounded bg-error/10 border border-error/30 shrink-0">STRUCTURAL CRISIS</span>
+</div>
+<div class="space-y-6">
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded bg-error/10 border border-error/20 flex items-center justify-center shrink-0 mt-0.5 text-error font-mono font-bold text-sm">01</div>
+<div>
+<h4 class="text-body-lg font-body-lg font-semibold text-on-surface">KV-Cache O(N²) 메모리 폭발</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  10만 토큰이나 초대형 CAD 도면 입력 시 VRAM 사용량이 256GB 이상으로 급상승하여 Out-of-Memory(OOM) 오류 및 인프라 다운타임 유발.
+                </p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded bg-error/10 border border-error/20 flex items-center justify-center shrink-0 mt-0.5 text-error font-mono font-bold text-sm">02</div>
+<div>
+<h4 class="text-body-lg font-body-lg font-semibold text-on-surface">천문학적인 CAPEX 및 클라우드 종속</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  클라우드 API 유출 공포로 8-GPU 온프레미스 노드 구축 시 대당 3억~5억 원의 비용 소요, 막대한 냉각 및 전기요금 감당 불가.
+                </p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded bg-error/10 border border-error/20 flex items-center justify-center shrink-0 mt-0.5 text-error font-mono font-bold text-sm">03</div>
+<div>
+<h4 class="text-body-lg font-body-lg font-semibold text-on-surface">블랙박스 법적 책임 리스크 (AI Act 미충족)</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  수천억 파라미터 연산 경로의 사후 증명이 불가능하여 방위산업 사고 및 의료 규제 발생 시 감사 추적 로그 부재로 전면 책임 부과.
+                </p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-4 border-t border-error/20 flex justify-between items-center font-label-sm text-label-sm text-outline">
+<span>MEMORY CONSUMPTION</span>
+<span class="text-error font-mono font-bold">O(N²) DIVERGENCE (UNBOUNDED)</span>
+</div>
+</div>
+
+<!-- Center: MODUIRUM Core Logo (2 cols) -->
+<div class="lg:col-span-2 flex flex-col items-center justify-center relative py-6 lg:py-0">
+  <!-- Glowing Background Aura -->
+  <div class="absolute w-44 h-44 bg-primary-container/15 blur-3xl rounded-full pointer-events-none"></div>
+  
+  <div class="relative z-10 flex flex-col items-center gap-3 w-full">
+    <!-- Glowing 3D Layered Logo -->
+    <div class="relative group p-2 flex flex-col items-center">
+      <div class="absolute -inset-3 rounded-3xl bg-gradient-to-r from-primary-container/30 via-[#3b82f6]/20 to-secondary-fixed/30 blur-md group-hover:blur-xl transition-all duration-500 animate-pulse"></div>
+      <img src="assets/images/moduirum_logo.png" alt="MODUIRUM Core Logo" class="w-28 h-28 md:w-36 md:h-36 relative object-contain drop-shadow-[0_0_28px_rgba(0,242,254,0.7)] group-hover:scale-105 transition-transform duration-300" />
+      <span class="absolute -bottom-1 w-2.5 h-2.5 rounded-full bg-primary-container animate-ping"></span>
+    </div>
+
+    <!-- Center Brand Title: MODUIRUM CORE -->
+    <div class="flex items-center gap-1.5 text-center mt-1">
+      <span class="font-headline-sm text-[18px] md:text-[20px] font-black tracking-widest text-primary">
+        MODUIRUM <span class="text-primary-container">CORE</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Right: MODUIRUM DEQ Breakthrough Tile (5 cols) -->
+<div class="lg:col-span-5 relative p-7 md:p-8 rounded-xl border border-primary-container/40 bg-surface-container-low/80 backdrop-blur-md shadow-[0_0_30px_-5px_rgba(0,242,254,0.15)] overflow-hidden flex flex-col justify-between h-full">
+<div class="absolute top-0 right-0 w-48 h-48 bg-primary-container/10 blur-3xl pointer-events-none"></div>
+<div class="flex items-center justify-between border-b border-primary-container/30 pb-4 mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" data-icon="verified">verified</span>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-primary break-keep">MODUIRUM O(1) 소버린 <span class="whitespace-nowrap">DEQ 아키텍처</span></h3>
+</div>
+<span class="font-label-sm text-label-sm text-primary-container px-2 py-0.5 rounded bg-primary-container/10 border border-primary-container/30 shrink-0">PATENTED SOLVER</span>
+</div>
+<div class="space-y-6">
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded bg-primary-container/10 border border-primary-container/30 flex items-center justify-center shrink-0 mt-0.5 text-primary-container font-mono font-bold text-sm">01</div>
+<div>
+<h4 class="text-body-lg font-body-lg font-semibold text-primary">수학적 O(1) 불변 메모리 보증</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  심층 레이어 스택을 수학적 평형점 $z^* = f(z^*, x)$ 단일 레이어로 치환. 데이터 길이가 무한히 늘어나도 단 48GB VRAM 내에서 완벽 수렴.
+                </p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded bg-primary-container/10 border border-primary-container/30 flex items-center justify-center shrink-0 mt-0.5 text-primary-container font-mono font-bold text-sm">02</div>
+<div>
+<h4 class="text-body-lg font-body-lg font-semibold text-primary">단 1대의 워크스테이션으로 인프라 완결</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  단일 RTX 6000 Ada 탑재 워크스테이션(약 8,500만 원)으로 5억 원 클러스터급 추론 능력을 100% 완전 오프라인 환경에서 실현.
+                </p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded bg-primary-container/10 border border-primary-container/30 flex items-center justify-center shrink-0 mt-0.5 text-primary-container font-mono font-bold text-sm">03</div>
+<div>
+<h4 class="text-body-lg font-body-lg font-semibold text-primary">Tech-Audit™ 불변 감사 봉인 (Forensic Seal)</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  모든 추론 중간 수학적 상태와 가중치를 하드웨어 Enclave 내에서 SHA-256 해시로 타임스탬프 봉인하여 완벽한 사후 감사 증적 제공.
+                </p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-4 border-t border-primary-container/30 flex justify-between items-center font-label-sm text-label-sm text-on-surface-variant">
+<span>MEMORY CONSUMPTION</span>
+<span class="text-primary-container font-mono font-bold">O(1) CONSTANT [48.00 GB LOCKED]</span>
+</div>
+</div>
+</div>
+</section>
+<!-- REAL-WORLD FIELD HARDWARE & DEPLOYMENTS (3 Photographic Cards) -->
+<section class="py-20 md:py-28 px-6 lg:px-12 max-w-7xl mx-auto border-t border-outline-variant/20" id="defense-vault">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high/70 border border-outline-variant/40 rounded-lg mb-3">
+<span class="font-label-sm text-label-sm text-primary-container">MISSION-CRITICAL SOVEREIGN NODES</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl font-bold text-primary">
+            현장 배치 완료된 초정밀 하드웨어 인프라
+          </h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+          국방 클린룸, 방산 제조 조립 라인, 항공 정비 현장에서 실제 구동 중인 오프라인 Sovereign AI 물리 하드웨어입니다.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- CARD 1: Cleanroom Lab Workstation (IMAGE_7) -->
+<div class="group bg-surface-container-low/70 border border-white/10 hover:border-primary-container/50 rounded-xl overflow-hidden backdrop-blur-md transition-all duration-300 flex flex-col">
+<div class="relative aspect-[16/10] overflow-hidden bg-black">
+<img alt="MODUIRUM 3D Precision CAD Engineering Workstation" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="assets/images/cad_workstation_lab.jpg">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
+<div class="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest/90 backdrop-blur-md rounded border border-white/10 font-label-sm text-label-sm text-primary-container">
+              HARDWARE SPEC: RT-6000
+            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-2">Cogni-OS Single Workstation</div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-primary mb-3">
+                단 1대로 종결되는 3D 정밀 CAD 해석 엔지니어링 워크스테이션
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                방산·항공우주 정밀 기계설계 엔지니어들을 위한 단일 오프라인 노드. 수랭 쿨링 및 밀스펙 샤시를 통해 10만 개 이상 부품의 대규모 3D CAD 어셈블리를 외부 클라우드 접속 없이 실시간 연산합니다.
+              </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/20 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">LATENCY: &lt; 14ms</span>
+<span class="text-primary-container">AIR-GAP VERIFIED</span>
+</div>
+</div>
+</div>
+<!-- CARD 2: Smart Glasses Hands-Free AR (IMAGE_8) -->
+<div class="group bg-surface-container-low/70 border border-white/10 hover:border-primary-container/50 rounded-xl overflow-hidden backdrop-blur-md transition-all duration-300 flex flex-col">
+<div class="relative aspect-[16/10] overflow-hidden bg-black">
+<img alt="Aerospace defense engineer with AR smart glasses inspecting 3D CAD turbine" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1VJj771v35AuJ8EMtF_3dl95aPPHrQoIUZ_4_3lBmW-CqUPnRSlur-BMIB1IuGoqYum-MMnHULKKWHdrU0dgA89F5LJEc_i7NEeGZdZwcUB4-lioekOVl0dDjCgcofBxaNtfEGDFdSxlewCs8uUGvEd6_nZMsW330bY2IiB4u8ZF8CjRAVn0h7OiMNctX4Zql0EWcWbSH0m7U63smkfalzSbX2pwGjJXFrBUHm4mWwuWILiTYwhWA53lCI">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
+<div class="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest/90 backdrop-blur-md rounded border border-white/10 font-label-sm text-label-sm text-secondary-fixed">
+              FIELD INTERFACE: AR HUD
+            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-2">Tactical Edge Integration</div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-primary mb-3">
+                현장 작업자 시야각(FOV) 0ms 지연 스마트글라스 핸즈프리 연동
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                항공기 가스터빈 분해 및 국방 조립 현장 작업자의 시야에 실시간 홀로그램 결함 매뉴얼 투사. O(1) Constant Solver가 글라스 디바이스의 제한된 버퍼에서도 프레임 드랍 없는 실시간 증강현실을 보장합니다.
+              </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/20 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">BANDWIDTH: LOCAL RF</span>
+<span class="text-primary-container">MIL-STD COMPLIANT</span>
+</div>
+</div>
+</div>
+<!-- CARD 3: Physical Cryptographic USB Key Enclave (IMAGE_6) -->
+<div class="group bg-surface-container-low/70 border border-white/10 hover:border-primary-container/50 rounded-xl overflow-hidden backdrop-blur-md transition-all duration-300 flex flex-col">
+<div class="relative aspect-[16/10] overflow-hidden bg-black">
+<img alt="Air-gap cryptographic USB enclave key mounted in secure server unit" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1WHoDm6CaPZmQhPKUFxALYLRTkilB9PejFWNSmJ9oQP9xpmq3ER1baAFnpuUEC4a-jMBiRQYlUHkq3uGJMVSEZvmWBZrsYVwvxYftbI2-t_aNkEKP1V7VtJc4z3u15LzqyMKwx5JmA5Kq-Z-F2UmehWO2AyFjQZwzfjyoB8T1sO2SKiTbMlEsCsYA0Fc0psIlrs6sNNAD6pRwHP2VCY_9Ov_0wF-pbgkWTRDbaP2f-Aj5vvF_iz8AvLShk">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
+<div class="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest/90 backdrop-blur-md rounded border border-white/10 font-label-sm text-label-sm text-primary-container">
+              SECURITY: HARDWARE HSM
+            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-2">2-Step Air-Gap Enclave BM</div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-primary mb-3">
+                인터넷 없이도 구독 과금을 통제하는 물리적 USB Enclave 락인
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                폐쇄망 환경에서 라이선스를 집행하는 방산 특화 과금 시스템. 주기적으로 교체 공급되는 하드웨어 USB 보안 Enclave 토큰을 통해 외부 통신 선로 없이도 계약 기간 및 연산 토큰 한도를 물리적으로 강제합니다.
+              </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/20 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">CRYPTO: ED25519</span>
+<span class="text-primary-container">ZERO EXFILTRATION</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- VERIFIED TRACTION & SCIENTIFIC EVIDENCE (Bento Proof Section) -->
+<section class="py-20 md:py-28 px-6 lg:px-12 max-w-7xl mx-auto border-t border-outline-variant/20" id="cryptographic-audit">
+<div class="text-center max-w-3xl mx-auto mb-16">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high/70 border border-outline-variant/40 rounded-lg mb-3">
+<span class="font-label-sm text-label-sm text-primary-container">VALIDATED CONTRACTS &amp; SCIENTIFIC PEER AUDITS</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl font-bold text-primary">
+          검증된 실증 레퍼런스 및 수주 트랙션
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-3">
+          이론에 머무는 연구가 아닙니다. 국방 방산 대기업 실제 납품 계약과 글로벌 톱티어 연구기관과의 공동 연구를 통해 실증되었습니다.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6"><!-- Proof Tile 1: Defense Contract -->
+<div class="group flex flex-col rounded-xl bg-surface-container-low/70 border border-white/10 hover:border-primary-container/50 transition-all duration-300 backdrop-blur-md overflow-hidden shadow-[0_0_20px_-5px_rgba(0,242,254,0.15)]">
+  <div class="relative h-48 w-full overflow-hidden bg-black border-b border-outline-variant/30">
+    <img alt="High-tech precision defense manufacturing factory floor and aerospace component machining plant, skilled Korean mechanical engineer in dark navy industrial work uniform inspecting high-precision machined defense titanium alloy parts near an industrial CAD rugged computer terminal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDONPZhjdGnQvqlrsQWWS3YSkgWJmSC08mT-XNeQoXQW5TjpTRIvPbU264_DU_D-vKEbaO7IdaywtaeCX_EdCIpUSqvE7pZR21AjUzRQhMNr_tVbg-CzqGisWKoa5Z4HZOGaSY8FjaP6Qz8ZgMPz1ndscHVwSbLso6xknW0jK9MTKl47qXYLMKDqtFuDmDF6RBMtqidXaBjdpvr4IR0_qShgDp8P3gBTmRU8na3rmgYd7iUOD-GAjLv">
+    <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent"></div>
+    <div class="absolute top-3 left-3 flex items-center gap-2">
+      <span class="px-2.5 py-1 bg-surface-container-lowest/90 backdrop-blur-md rounded border border-white/10 text-primary-container font-label-sm text-label-sm tracking-wider">
+        DEFENSE / CONTRACT
+      </span>
+    </div>
+    <div class="absolute top-3 right-3 p-1.5 bg-surface-container-lowest/80 backdrop-blur-md rounded border border-white/10 text-primary-container flex items-center justify-center">
+      <span class="material-symbols-outlined text-[18px]" data-icon="verified_user">verified_user</span>
+    </div>
+  </div>
+  <div class="p-6 flex-1 flex flex-col justify-between">
+    <div>
+      <div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-2">Mission Proof 01</div>
+      <h3 class="font-headline-sm text-headline-sm font-semibold text-primary mb-2 leading-tight">
+        방산 아주산업 1.1억 원 납품 수주 및 PCT 국제 특허
+      </h3>
+      <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        국방 부품 3D CAD 해석 자동화를 위한 오프라인 Cogni-OS 워크스테이션 납품 계약 완료. DEQ 고정점 평형 가속 알고리즘에 대한 PCT 국제 원천 특허 출원을 완료하여 진입장벽을 구축했습니다.
+      </p>
+    </div>
+    <div class="mt-6 pt-4 border-t border-outline-variant/20 font-label-sm text-label-sm text-primary flex items-center justify-between">
+      <span class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary-container shadow-[0_0_6px_#00f2fe]"></span>
+        계약 금액 110,000,000 KRW
+      </span>
+      <span class="text-primary-container font-semibold">검수 완료</span>
+    </div>
+  </div>
+</div>
+
+<!-- Proof Tile 2: AlphaFold3 Bio Simulation -->
+<div class="group flex flex-col rounded-xl bg-surface-container-low/70 border border-white/10 hover:border-secondary-fixed/50 transition-all duration-300 backdrop-blur-md overflow-hidden shadow-[0_0_20px_-5px_rgba(0,242,254,0.15)]">
+  <div class="relative h-48 w-full overflow-hidden bg-black border-b border-outline-variant/30">
+    <img alt="Bioinformatics research laboratory scientist analyzing 3D AlphaFold3 protein structure docking simulations" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0mlnlN1Kb2BoxRsBLM4pngKExFBr9WPnWZUCtwgg1plIEzYsu8hRT5zodiEDQCaJUO2NHBAVYbwbz6NVGmi8Eef8fsULbeVNxbAmxAUVfr1myi0USQ7PTRuxeFcX42ZLFtf3GEfE90g9YMzbkzhqQIbkGUQ43Icimpd_gzUSgRQkC9emDugp6w5gYTnWBlOHO63TRZZRH1yZ3e1R69dGeyOkh2gVW-MkdiVe4NzJk4OFLLEwKF5P-">
+    <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent"></div>
+    <div class="absolute top-3 left-3 flex items-center gap-2">
+      <span class="px-2.5 py-1 bg-surface-container-lowest/90 backdrop-blur-md rounded border border-white/10 text-secondary-fixed font-label-sm text-label-sm tracking-wider">
+        GLOBAL BIO / ALPHAFOLD3
+      </span>
+    </div>
+    <div class="absolute top-3 right-3 p-1.5 bg-surface-container-lowest/80 backdrop-blur-md rounded border border-white/10 text-secondary-fixed flex items-center justify-center">
+      <span class="material-symbols-outlined text-[18px]" data-icon="biotech">biotech</span>
+    </div>
+  </div>
+  <div class="p-6 flex-1 flex flex-col justify-between">
+    <div>
+      <div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-2">Scientific Proof 02</div>
+      <h3 class="font-headline-sm text-headline-sm font-semibold text-primary mb-2 leading-tight">
+        Nature Biotechnology 저자진 공동 연구 (ISTA/MIGAL)
+      </h3>
+      <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        AlphaFold3의 단백질 복합체 시퀀스 증가에 따른 VRAM 폭발 문제를 극복하기 위해, 오스트리아 ISTA 및 이스라엘 MIGAL 연구소의 생물정보학 저자진과 O(1) DEQ 알고리즘 적용 공동 연구를 협의 및 진행 중입니다.
+      </p>
+    </div>
+    <div class="mt-6 pt-4 border-t border-outline-variant/20 font-label-sm text-label-sm text-secondary-fixed flex items-center justify-between">
+      <span class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span>
+        단백질 시퀀스 무한 수렴
+      </span>
+      <span class="text-secondary-fixed font-semibold">검증 진행</span>
+    </div>
+  </div>
+</div>
+
+<!-- Proof Tile 3: Fintech AI Agent Audit -->
+<div class="group flex flex-col rounded-xl bg-surface-container-low/70 border border-white/10 hover:border-primary-container/50 transition-all duration-300 backdrop-blur-md overflow-hidden shadow-[0_0_20px_-5px_rgba(0,242,254,0.15)]">
+  <div class="relative h-48 w-full overflow-hidden bg-black border-b border-outline-variant/30">
+    <img alt="Fintech cybersecurity operations and AI audit control center reviewing autonomous agent logs" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChTNSj7RTnh0YFguPlEAA4iTyClrrHbK1run-O-JDERfDMD2dv069ruNmh2uFT_FKpapzreCWsrbTdLvCAtSE5HRpeFKhocwlleRqzBDkVVQN2Zlv0nLEIJMRXE5yoZue8NyAT9luBRZODwqaK4ixTbnuPAthvBSNBpJTKP0o3AsQf_SkdYkU1pqz6UGeL2o0n15s5sXNxx9VDByg1DIG6pki2kylnZXdLHhb50vaQZqWmhe7tRt2_">
+    <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent"></div>
+    <div class="absolute top-3 left-3 flex items-center gap-2">
+      <span class="px-2.5 py-1 bg-surface-container-lowest/90 backdrop-blur-md rounded border border-white/10 text-primary-container font-label-sm text-label-sm tracking-wider">
+        FINTECH / AUDIT
+      </span>
+    </div>
+    <div class="absolute top-3 right-3 p-1.5 bg-surface-container-lowest/80 backdrop-blur-md rounded border border-white/10 text-primary-container flex items-center justify-center">
+      <span class="material-symbols-outlined text-[18px]" data-icon="account_balance">account_balance</span>
+    </div>
+  </div>
+  <div class="p-6 flex-1 flex flex-col justify-between">
+    <div>
+      <div class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-2">Audit Proof 03</div>
+      <h3 class="font-headline-sm text-headline-sm font-semibold text-primary mb-2 leading-tight">
+        신한카드 AX연구소 &amp; NIA 주관 AI 에이전트 결제 감사 PoC
+      </h3>
+      <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        자율 AI 결제 에이전트(Autonomous Payment Agent)의 이상 거래 및 권한 오남용을 수학적으로 실시간 방어하는 Tech-Audit™ 불변 감사 봉인 아키텍처 파일럿 PoC 실증을 수행했습니다.
+      </p>
+    </div>
+    <div class="mt-6 pt-4 border-t border-outline-variant/20 font-label-sm text-label-sm text-primary flex items-center justify-between">
+      <span class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary-container shadow-[0_0_6px_#00f2fe]"></span>
+        금융권 보안성 검토
+      </span>
+      <span class="text-primary-container font-semibold">위변조 방지 적합</span>
+    </div>
+  </div>
+</div></div>
+</section>
+<!-- THE GOLDEN TRIANGLE LEADERSHIP -->
+<section class="py-20 md:py-28 px-6 lg:px-12 max-w-7xl mx-auto border-t border-outline-variant/20" id="sovereign-clusters">
+<div class="text-center max-w-3xl mx-auto mb-16">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high/70 border border-outline-variant/40 rounded-lg mb-3">
+<span class="font-label-sm text-label-sm text-primary-container">CORE ARCHITECTS</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl font-bold text-primary">
+          The Golden Triangle Leadership
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-3">
+          10년 항공정비 국방 필드 도메인 지식, KAIST 뇌인지·신경과학 AI 박사의 상태공간 최적화, 충북대 지능로봇공학과 비전 트랜스포머 석학의 삼각 체제로 구동됩니다.
+        </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+<!-- Leader 1 -->
+<a href="/hsh.php" title="허상훈 온라인 명함 보기" class="bg-surface-container-low/70 border border-white/10 rounded-xl p-6 backdrop-blur-md relative group hover:border-primary-container/40 transition-all flex flex-col justify-between h-full no-underline text-inherit cursor-pointer">
+<div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-16 h-16 rounded-xl overflow-hidden border border-primary-container/50 relative shrink-0 shadow-[0_0_16px_rgba(0,242,254,0.25)] group-hover:scale-105 transition-transform duration-300">
+  <img alt="허상훈 대표 일러스트 초상화" class="w-full h-full object-cover" src="assets/images/leader_heo_sanghoon.jpg">
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-primary group-hover:text-primary-container transition-colors">허상훈</h3>
+<p class="font-label-sm text-label-sm text-primary-container">FOUNDER &amp; CEO</p>
+<p class="font-label-sm text-[10px] text-outline mt-1 tracking-wider uppercase group-hover:text-primary-container/80 transition-colors">온라인 명함 →</p>
+</div>
+</div>
+<div class="space-y-2 text-[13px] leading-[22px] font-body-md text-on-surface-variant border-t border-outline-variant/20 pt-4 break-keep tracking-tight whitespace-nowrap">
+<p class="">• 10년 항공정비 현장 도메인 총괄 및 국방장관 표창</p>
+<p class="">• AI 지식증류(Knowledge Distillation) 박사과정</p>
+<p class="">• 지능형 시스템 권위지(ESWA) 제1저자 논문 게재</p>
+<p class="">• 아주산업 1.1억 원 국방 CAD 해석 납품 수주 총괄</p>
+<p class="">• 방산 및 제조 엔지니어링 실무 프로세스 완벽 내재화</p>
+</div>
+</div>
+</a>
+<!-- Leader 2 -->
+<div class="bg-surface-container-low/70 border border-primary-container/30 rounded-xl p-6 backdrop-blur-md relative group shadow-[0_0_20px_-5px_rgba(0,242,254,0.15)] flex flex-col justify-between h-full">
+<div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-16 h-16 rounded-xl overflow-hidden border border-primary-container/70 relative shrink-0 shadow-[0_0_18px_rgba(0,242,254,0.35)] group-hover:scale-105 transition-transform duration-300">
+  <img alt="안수진 박사 일러스트 초상화" class="w-full h-full object-cover" src="assets/images/leader_an_sujin.jpg">
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-primary">안수진</h3>
+<p class="font-label-sm text-label-sm text-primary-container">CHIEF AI SCIENTIST &amp; CTO</p>
+</div>
+</div>
+<div class="space-y-2 text-[13px] leading-[22px] font-body-md text-on-surface-variant border-t border-outline-variant/20 pt-4 break-keep tracking-tight whitespace-nowrap">
+<p class="">• KAIST 바이오및뇌공학 박사 / 뇌인지공학 석사</p>
+<p class="">• KAIST 신경과학-AI 융합연구센터(CNAI) 연수연구원</p>
+<p class="">• KAIST-케임브리지-딥마인드 강화학습 공동연구</p>
+<p class="">• 메타인지 및 고차원 상태공간 탐색·최적화 총괄</p>
+<p class="">• NRF 시스템 3 강화학습 및 삼성 미래기술육성 수행</p>
+</div>
+</div>
+</div>
+<!-- Leader 3 -->
+<div class="bg-surface-container-low/70 border border-white/10 rounded-xl p-6 backdrop-blur-md relative group hover:border-primary-container/40 transition-all flex flex-col justify-between h-full">
+<div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-16 h-16 rounded-xl overflow-hidden border border-secondary-fixed/50 relative shrink-0 shadow-[0_0_16px_rgba(180,197,255,0.25)] group-hover:scale-105 transition-transform duration-300">
+  <img alt="황영배 교수 일러스트 초상화" class="w-full h-full object-cover" src="assets/images/leader_hwang_youngbae.jpg">
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-primary">황영배</h3>
+<p class="font-label-sm text-label-sm text-secondary-fixed">ACADEMIC &amp; TECHNICAL ADVISOR</p>
+</div>
+</div>
+<div class="space-y-2 text-[13px] leading-[22px] font-body-md text-on-surface-variant border-t border-outline-variant/20 pt-4 break-keep tracking-tight whitespace-nowrap">
+<p class="">• 충북대학교 지능로봇공학과 교수 (KAIST 공학박사)</p>
+<p class="">• 컴퓨터 비전 및 비전 트랜스포머(ViT) 경량화 석학</p>
+<p class="">• ViT 어텐션 가지치기(AMAP) FLOPs 37% 절감</p>
+<p class="">• 온디바이스 에지-서버 연속학습 및 3D SLAM 특허</p>
+<p class="">• 최근 5개년 논문 49편 게재 (피인용 400회 이상)</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CONSULTATION & POC REQUEST (Enterprise Air-Gap Request Terminal) -->
+<section class="py-20 md:py-28 px-6 lg:px-12 max-w-5xl mx-auto border-t border-outline-variant/20" id="consultation">
+<div class="relative bg-surface-container-low/90 border border-white/15 rounded-2xl p-8 md:p-12 backdrop-blur-2xl shadow-[0_0_40px_-5px_rgba(0,242,254,0.2)]">
+<div class="text-center max-w-2xl mx-auto mb-10">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high border border-primary-container/40 rounded-lg mb-3">
+<span class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_6px_#00f2fe]"></span>
+<span class="font-label-sm text-label-sm text-primary-container tracking-wider">SECURE TRANSMISSION ENCLAVE</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl font-bold text-primary">
+            오프라인 Air-Gap 무상 PoC 검증 신청
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">
+            고객사의 폐쇄망 또는 실제 대용량 CAD/도면 데이터셋을 사전 전달받지 않습니다. 귀사의 연구소 현장에서 직접 O(1) 불변 메모리와 추론 속도를 검증해 드립니다.
+          </p>
+</div>
+<form class="space-y-6" onsubmit="event.preventDefault(); alert('PoC 신청 정보가 군사 보안 프로토콜로 암호화되어 전송되었습니다. 담당 엔지니어가 24시간 내 유선 연락드립니다.');">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Organization Name -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider block">기관 / 기업명</label>
+<input class="w-full bg-[#05070B] border border-white/10 rounded px-4 py-3 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md transition-all" placeholder="예: 국방과학연구소 / 한화시스템 / 현대위아" required="" type="text">
+</div>
+<!-- Department / Title -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider block">부서 및 직책</label>
+<input class="w-full bg-[#05070B] border border-white/10 rounded px-4 py-3 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md transition-all" placeholder="예: 무기체계연구센터 수석엔지니어" required="" type="text">
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Work Email -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider block">공식 기관 이메일</label>
+<input class="w-full bg-[#05070B] border border-white/10 rounded px-4 py-3 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md transition-all" placeholder="operator@defense.mil.kr" required="" type="email">
+</div>
+<!-- Direct Contact -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider block">유선 연락처 (직통)</label>
+<input class="w-full bg-[#05070B] border border-white/10 rounded px-4 py-3 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md transition-all" placeholder="02-XXXX-XXXX / 010-XXXX-XXXX" required="" type="tel">
+</div>
+</div>
+<!-- Target Workload Type -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider block">도입 검증 대상 도메인</label>
+<select class="w-full bg-[#05070B] border border-white/10 rounded px-4 py-3 text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md transition-all">
+<option value="cad">방산/항공 대규모 3D CAD 어셈블리 오프라인 해석</option>
+<option value="bio">단백질 폴딩 / Bio-Sequence 무한 컨텍스트 추론</option>
+<option value="fin">금융/결제 AI 에이전트 불변 감사 봉인 (Tech-Audit™)</option>
+<option value="edge">군사 정찰기/드론 에지 탑재 초저전력 O(1) 모듈</option>
+</select>
+</div>
+<!-- Verification Checkbox -->
+<div class="flex items-start gap-3 pt-2">
+<input class="mt-1 bg-[#05070B] border-white/20 text-secondary-container focus:ring-primary-container rounded" id="airgap-consent" required="" type="checkbox">
+<label class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer" for="airgap-consent">
+              귀사의 데이터는 외부로 반출되지 않으며, 실증 장비는 물리적 USB Enclave 락인을 장착한 채 폐쇄망 룸 내에서 시연됨에 동의합니다.
+            </label>
+</div>
+<!-- Submit Button -->
+<div class="pt-4">
+<button class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-secondary-container via-primary-container to-primary-container hover:opacity-95 text-surface-container-lowest font-body-lg text-body-lg font-semibold py-4 rounded border border-white/30 shadow-[0_0_24px_-4px_rgba(0,242,254,0.4)] transition-all" type="submit">
+<span class="material-symbols-outlined text-[20px]" data-icon="encrypted">encrypted</span>
+              암호화된 PoC 엔클레이브 신청 제출
+            </button>
+</div>
+</form>
+</div>
+</section>
+</main>
+<!-- INSTITUTIONAL FOOTER (Shared Components JSON Anchor) -->
+<footer class="w-full bottom-0 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-8 py-6 max-w-full">
+<!-- Left: Logo & Copyright -->
+<div class="flex flex-col md:flex-row items-center gap-4 mb-4 md:mb-0">
+  <div class="flex items-center gap-3">
+    <img src="assets/images/moduirum_logo.png" alt="MODUIRUM Logo" class="w-7 h-7 object-contain drop-shadow-[0_0_8px_rgba(0,242,254,0.5)]" />
+    <span class="font-headline-sm text-[18px] font-black text-primary tracking-[0.2em]">
+      MODUIRUM
+    </span>
+  </div>
+  <span class="hidden md:inline-block text-outline-variant/60">|</span>
+  <span class="text-label-sm font-label-sm text-outline dark:text-outline">
+    © 2026 MODUIRUM INC. // ALL RIGHTS RESERVED // ZERO-TRUST AIR-GAP VERIFIED
+  </span>
+</div>
+<!-- Right: Mandated Links from JSON -->
+<div class="flex flex-wrap items-center justify-center gap-6">
+<a class="text-outline dark:text-outline font-label-sm text-label-sm tracking-wider uppercase hover:text-primary transition-colors" href="#protocol">
+          Protocol Architecture
+        </a>
+<a class="text-outline dark:text-outline font-label-sm text-label-sm tracking-wider uppercase hover:text-primary transition-colors" href="#specs">
+          Cryptographic Specs
+        </a>
+<a class="text-outline dark:text-outline font-label-sm text-label-sm tracking-wider uppercase hover:text-primary transition-colors" href="#certs">
+          Compliance &amp; Sovereign Certs
+        </a>
+<a class="text-outline dark:text-outline font-label-sm text-label-sm tracking-wider uppercase hover:text-primary transition-colors" href="#node-map">
+          Telemetry Node Map
+        </a>
+<a class="text-primary-container font-label-sm text-label-sm tracking-wider uppercase hover:underline transition-colors flex items-center gap-1" href="physical_ai_data_factory.html">
+  <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+  Physical AI Factory
+</a>
+<span class="text-primary-container font-label-sm text-label-sm flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary-container inline-block shadow-[0_0_6px_#00f2fe]"></span>
+          Status: Nominal [99.999%]
+        </span>
+</div>
+</div>
+</footer>
+
+
+</body></html>

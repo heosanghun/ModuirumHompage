@@ -4,8 +4,10 @@ MODUIRUM 공식 홈페이지 및 허상훈 대표 온라인 명함(`hsh.php`) �
 
 ## Live Site
 
-- **Company:** https://www.moduirum.com/
-- **Profile:** https://www.moduirum.com/hsh.php
+- **Company:** http://www.moduirum.com/
+- **Profile:** http://www.moduirum.com/hsh.php
+
+> 현재 닷홈 호스팅 SSL 미설정으로 **HTTP**로 접속해야 합니다. (`https://`는 접속 불가)
 
 ## Structure
 

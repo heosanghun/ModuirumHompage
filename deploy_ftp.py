@@ -31,6 +31,10 @@ PROFILE_INCLUDE = {
         "robots.txt",
         "static",
         "web",
+        "autonomous",
+        "binasea",
+        "riteflow",
+        "aivora_assets",
     ],
     "moduirum-legacy": [
         "index.html",
@@ -97,16 +101,36 @@ def load_ftp_config() -> tuple[str, str, str, str]:
     return host, user, password, remote_root
 
 
+KNOWN_REMOTE_DIRS = set()
+
+
+def get_ftp_connection(host: str, user: str, password: str) -> ftplib.FTP:
+    ftp = ftplib.FTP()
+    ftp.connect(host, 21, timeout=60)
+    ftp.login(user, password)
+    ftp.set_pasv(True)
+    return ftp
+
+
 def ensure_remote_dir(ftp: ftplib.FTP, remote_dir: str) -> None:
+    if remote_dir in KNOWN_REMOTE_DIRS:
+        return
     parts = [p for p in remote_dir.split("/") if p]
     path = ""
     for part in parts:
         path += f"/{part}"
-        try:
-            ftp.cwd(path)
-        except ftplib.error_perm:
-            ftp.mkd(path)
-            ftp.cwd(path)
+        if path not in KNOWN_REMOTE_DIRS:
+            try:
+                ftp.cwd(path)
+                KNOWN_REMOTE_DIRS.add(path)
+            except ftplib.error_perm:
+                try:
+                    ftp.mkd(path)
+                    ftp.cwd(path)
+                    KNOWN_REMOTE_DIRS.add(path)
+                except ftplib.error_perm:
+                    pass
+    KNOWN_REMOTE_DIRS.add(remote_dir)
 
 
 def iter_local_files(local_root: Path, profile: str) -> list[Path]:
@@ -194,29 +218,48 @@ def main() -> int:
     t0 = time.time()
     ok, fail = 0, 0
 
-    ftp = ftplib.FTP()
-    ftp.connect(host, 21, timeout=60)
-    ftp.login(user, password)
-    ftp.set_pasv(True)
+    ftp = get_ftp_connection(host, user, password)
 
-    for local_file in files:
+    for i, local_file in enumerate(files, 1):
         rel = local_file.relative_to(local_root)
         remote_dir = remote_root if rel.parent == Path(".") else f"{remote_root}/{rel.parent.as_posix()}"
-        try:
-            print(f"[UPLOAD] {rel.as_posix()} -> {remote_dir}/{local_file.name}")
-            upload_file(ftp, local_file, remote_dir)
-            ok += 1
-        except Exception as exc:
-            print(f"[FAIL]   {rel.as_posix()} : {exc}")
+        
+        # Retry logic in case of network blips
+        uploaded = False
+        for attempt in range(3):
+            try:
+                upload_file(ftp, local_file, remote_dir)
+                ok += 1
+                uploaded = True
+                if i % 20 == 0 or i == len(files):
+                    print(f"[{i}/{len(files)}] {rel.as_posix()} -> {remote_dir}/{local_file.name}")
+                break
+            except Exception as exc:
+                print(f"[RETRY {attempt+1}] {rel.as_posix()}: {exc}")
+                try:
+                    ftp.quit()
+                except Exception:
+                    pass
+                time.sleep(1)
+                ftp = get_ftp_connection(host, user, password)
+        
+        if not uploaded:
+            print(f"[FAIL]   {rel.as_posix()}")
             fail += 1
 
-    ftp.quit()
+    try:
+        ftp.quit()
+    except Exception:
+        pass
     elapsed = time.time() - t0
 
     print("-" * 60)
     print(f"Done. success={ok}, fail={fail}, elapsed={elapsed:.1f}s")
     print(f"Check: http://{host}/")
     print(f"Check: http://www.moduirum.com/")
+    print(f"Check: http://www.moduirum.com/autonomous/")
+    print(f"Check: http://www.moduirum.com/binasea/")
+    print(f"Check: http://www.moduirum.com/riteflow/")
     return 0 if fail == 0 else 1
 
 

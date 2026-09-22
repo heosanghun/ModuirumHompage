@@ -1,14 +1,20 @@
-# Secrets
-.env
-.env.*
-settings.json
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.bak
+*.ac02.bak
+*.ac03.bak
 
-# Dependencies
-node_modules/
-.agents/
-
-# OS & temp
+# OS & Editor
 .DS_Store
 Thumbs.db
-__pycache__/
+.vscode/
+.idea/
+
+# Environment & logs
+.env
+.venv/
+venv/
 *.log
+.ff_test/

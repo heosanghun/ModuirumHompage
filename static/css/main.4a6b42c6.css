@@ -30,3 +30,9 @@
 .hero-btn a[href='/riteflow/']:hover .text { background: #fff !important; color: #00020f !important; box-shadow: 0 0 25px rgba(255,255,255,0.6) !important; }
 .hero-btn a[href='/binasea/'] .text { background: #00ff97 !important; color: #00020f !important; font-weight: 700 !important; border-radius: 30px !important; padding: 21.2px 28px !important; box-shadow: 0 0 20px rgba(0,255,151,0.4) !important; display: inline-block !important; transition: all .3s ease !important; }
 .hero-btn a[href='/binasea/']:hover .text { background: #fff !important; color: #00020f !important; box-shadow: 0 0 25px rgba(255,255,255,0.6) !important; }
+
+.about-sec-title .title { word-break: keep-all !important; line-height: 1.6 !important; }
+.about-sec-title .title span { display: inline-block !important; vertical-align: middle !important; }
+.about-sec-title .title span:first-child { margin: 0 8px !important; }
+.about-sec-title .title span:nth-child(2) { margin: 0 8px !important; }
+.about-sec-title .title span:nth-child(3) { left: 0 !important; margin: 0 24px 0 14px !important; vertical-align: middle !important; top: -2px !important; }
